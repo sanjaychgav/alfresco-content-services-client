@@ -123,4 +123,12 @@ public class Controller{
         }
         return new ResponseEntity<>("File downloaded: ".concat(filePath),HttpStatus.CREATED);
     }
+
+    @RequestMapping(value = "/node-create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    private ResponseEntity<String> createNode(@RequestBody FileMetadata metadata, 
+        @RequestParam(name = "relativePath", required = false, defaultValue = "") String relativePath){
+        String response = nodesService.createNode(metadata, relativePath);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+
+    }
 }
