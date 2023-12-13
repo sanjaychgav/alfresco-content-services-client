@@ -59,5 +59,37 @@ public class NodesService{
         return headers;
     }
 
+    public String getNodeInfo(String nodeId, boolean listChildren){
+        StringBuffer url = new StringBuffer(getUrl());
+        url.append("/").append(nodeId);
+        if(listChildren)
+            url.append("/children");
+        return getNodeInformation(url);
+    }
+
+    public String getNodeInfo(String parentNodeId, String relativePath){
+        StringBuffer url = new StringBuffer(getUrl());
+        url.append("/").append(parentNodeId).append("?relativePath=").append(relativePath);
+        return getNodeInformation(url);
+    }
+
+    private String getNodeInformation(StringBuffer url){
+        HttpHeaders headers = getAuthenticatedHeaders();
+        HttpEntity<String> request = new HttpEntity<>(headers);
+        try{
+            ResponseEntity<String> response = restTemplate.exchange(url.toString(), HttpMethod.GET, request, String.class);
+            JSONObject json;
+            if(response.getBody()!=null && (json=new JSONObject(response.getBody()))!=null && json.has("entry")){
+                JSONObject info = json.getJSONObject("entry");
+                return info.toString();
+            }else{
+                //TODO: log error and retry and throw error
+            }            
+        }catch(Exception e){
+            //TODO: log error retry
+            return null;
+        }
+        return null;
+    }
 
 }
