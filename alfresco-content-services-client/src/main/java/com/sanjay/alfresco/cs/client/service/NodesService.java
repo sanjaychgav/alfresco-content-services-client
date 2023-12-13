@@ -11,7 +11,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.clinet.MultipartBodyBuilder;
+import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -19,7 +19,7 @@ import org.springframework.web.client.RestTemplate;
 import com.sanjay.alfresco.cs.client.constants.Constants;
 import com.sanjay.alfresco.cs.client.model.FileMetadata;
 import com.sanjay.alfresco.cs.client.utils.AlfrescoAuthenticator;
-import com.sanjay.alfresco.cs.client.utils.Common;
+import com.sanjay.alfresco.cs.client.utils.Commons;
 
 @Service
 public class NodesService{
