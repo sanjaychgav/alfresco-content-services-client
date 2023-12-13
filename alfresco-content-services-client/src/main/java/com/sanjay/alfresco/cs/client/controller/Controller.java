@@ -131,4 +131,21 @@ public class Controller{
         return new ResponseEntity<>(response, HttpStatus.CREATED);
 
     }
+
+    @RequestMapping(value = "/node-delete", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    private ResponseEntity<String> deleteNode(@RequestParam(name = "nodeId") String nodeId,
+        @RequestParam(name = "relativePath", required = false) String relativePath){
+
+        if(relativePath!=null){
+            //Child node
+            JSONObject json = new JSONObject(nodesService.getNodeInfo(nodeId, relativePath));
+            nodeId = json.getString("id");
+        }
+        boolean flag = nodesService.deleteNode(nodeId);
+        if(flag)
+            return new ResponseEntity<>(HttpStatus.valueOf(204));
+        else
+            return new ResponseEntity<String>(HttpStatus.BAD_GATEWAY);
+    }
+
 }
