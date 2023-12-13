@@ -53,4 +53,14 @@ public class Controller{
         return new ResponseEntity<>("Application shutdown initiated", HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/ticket", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    private ResponseEntity<String> login(){
+        String ticket = authenticator.getTicket();
+        String encTicket = Commons.encodeTicket(ticket);
+        JSONObject json = new JSONObject();
+        json.put("Ticket", ticket);
+        json.put("Encoded Ticket", "Basic ".concat(encTicket));
+        return new ResponseEntity<>(json.toString(), HttpStatus.CREATED);
+    }
+
 }
