@@ -84,4 +84,17 @@ public class Controller{
         return new ResponseEntity<>(info, HttpStatus.OK);
     }
     
+    @RequestMapping(value = "/node-info", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    private ResponseEntity<String> updateNodeInfo(@RequestParam(name = "nodeId") String nodeId,
+        @RequestParam(name = "relativePath", required = false) String relativePath,
+        @RequestBody FileMetadata metadata){
+
+        if(relativePath!=null){
+            //Child node
+            JSONObject json = new JSONObject(nodesService.getNodeInfo(nodeId, relativePath));
+            nodeId = json.getString("id");
+        }
+        String info = nodesService.updateNodeInfo(nodeId, metadata);
+        return new ResponseEntity<>(info, HttpStatus.CREATED);
+    }
 }
