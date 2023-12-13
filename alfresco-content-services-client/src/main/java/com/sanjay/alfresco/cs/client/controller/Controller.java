@@ -63,4 +63,9 @@ public class Controller{
         return new ResponseEntity<>(json.toString(), HttpStatus.CREATED);
     }
 
+    @RequestMapping(value = "/ticket", method = RequestMethod.DELETE)
+    private ResponseEntity<String> logout(){
+        boolean flag = authenticator.deleteTicket();
+        return new ResponseEntity<>("Ticket deletion ".concat(flag?"success":"failed"), HttpStatus.OK);
+    }
 }

@@ -93,7 +93,7 @@ public class AlfrescoAuthenticator{
         }
     }
 
-    private boolean deleteTicket(){
+    public boolean deleteTicket(){
         if(ticket==null){
             return false;
         }else{
