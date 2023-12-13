@@ -11,10 +11,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import com.sanjay.alfresco.cs.client.constants.Constants;
+import lombok.extern.slf4j.Slf4j;
 
 import jakarta.annotation.PreDestroy;
 
-
+@Slf4j
 @Component
 public class AlfrescoAuthenticator{
 
@@ -92,5 +93,29 @@ public class AlfrescoAuthenticator{
         }
     }
 
+    private boolean deleteTicket(){
+        if(ticket==null){
+            return false;
+        }else{
+            String url = getUrl() + "/-me-";
+            String encodedTicket = Commons.encodeTicket(this.ticket);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.AUTHORIZATION, "Basic ".concat(encodedTicket));
+            HttpEntity<String> request = new HttpEntity<String>(headers);
+            try{
+                restTemplate.exchange(url, HttpMethod.DELETE, request, String.class);
+                ticket = null;
+                return true;
+            }catch(Exception e){
+                return false;
+            }
+        }
+    }
+
+    @PreDestroy
+    public void cleanupJob(){
+        log.info("Shutdown initiated!!!");
+        deleteTicket();
+    }
 
 }
