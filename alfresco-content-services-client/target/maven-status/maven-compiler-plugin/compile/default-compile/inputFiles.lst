@@ -1,6 +1,7 @@
 /workspaces/alfresco-content-services-client/alfresco-content-services-client/src/main/java/com/sanjay/alfresco/cs/client/model/FileMetadata.java
 /workspaces/alfresco-content-services-client/alfresco-content-services-client/src/main/java/com/sanjay/alfresco/cs/client/config/Configurations.java
 /workspaces/alfresco-content-services-client/alfresco-content-services-client/src/main/java/com/sanjay/alfresco/cs/client/utils/AlfrescoAuthenticator.java
+/workspaces/alfresco-content-services-client/alfresco-content-services-client/src/main/java/com/sanjay/alfresco/cs/client/controller/Controller.java
 /workspaces/alfresco-content-services-client/alfresco-content-services-client/src/main/java/com/sanjay/alfresco/cs/client/Application.java
 /workspaces/alfresco-content-services-client/alfresco-content-services-client/src/main/java/com/sanjay/alfresco/cs/client/constants/Constants.java
 /workspaces/alfresco-content-services-client/alfresco-content-services-client/src/main/java/com/sanjay/alfresco/cs/client/utils/Commons.java
