@@ -40,9 +40,9 @@ public class AlfrescoAuthenticator{
     }
 
     private String getTicket(){
-        // if(!validateTicket()){
-        //     createTicket();
-        // }
+        if(!validateTicket()){
+            createTicket();
+        }
         return ticket;
     }
 
@@ -66,6 +66,29 @@ public class AlfrescoAuthenticator{
             }
         }catch(Exception e){
             //TODO: retry
+        }
+    }
+
+    private boolean validateTicket(){
+        if(ticket==null){
+            return false;
+        }else{
+            String url = getUrl() + "/-me-";
+            String encodedTicket = Commons.encodeTicket(ticket);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.AUTHORIZATION, "Basic ".concat(encodedTicket));
+            HttpEntity<String> request = new HttpEntity<String>(headers);
+            try{
+                ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
+                JSONObject json;
+                if(response.getBody()!=null && (json = new JSONObject(response.getBody()))!=null && json.has("entry")){
+                    String ticket = json.getJSONObject("entry").getString("id");
+                    return ticket.equals(this.ticket);                    
+                }
+            }catch(Exception e){
+                return false;
+            }
+            return false;
         }
     }
 
