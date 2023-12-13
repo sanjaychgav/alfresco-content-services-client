@@ -79,7 +79,7 @@ public class NodesService{
         try{
             ResponseEntity<String> response = restTemplate.exchange(url.toString(), HttpMethod.GET, request, String.class);
             JSONObject json;
-            if(response.getBody()!=null && (json=new JSONObject(response.getBody()))!=null && json.has("entry")){
+            if(response.getBody()!=null && (json = new JSONObject(response.getBody()))!=null && json.has("entry")){
                 JSONObject info = json.getJSONObject("entry");
                 return info.toString();
             }else{
@@ -139,7 +139,7 @@ public class NodesService{
         try{
             ResponseEntity<String> response = restTemplate.exchange(url.toString(), HttpMethod.PUT, request, String.class);
             JSONObject respJson;
-            if(response.getBody()!=null && (respJson=new JSONObject(response.getBody()))!=null && respJson.has("entry")){
+            if(response.getBody()!=null && (respJson = new JSONObject(response.getBody()))!=null && respJson.has("entry")){
                 JSONObject info = respJson.getJSONObject("entry");
                 return info.toString();
             }else{
@@ -151,4 +151,49 @@ public class NodesService{
         }
         return null;
     }
+
+    public String createNode(FileMetadata metadata, String relativePath){
+        StringBuffer url = new StringBuffer(getUrl());
+        url.append("/").append(metadata.getNodeId())
+        .append( (relativePath!=null && !relativePath.isEmpty()) ? relativePath : "")
+        .append("/children");
+        HttpHeaders headers = getAuthenticatedHeaders();
+        Object request;
+        String name = metadata.getName();
+        Resource resource;
+
+        if(metadata.getFilePath()!=null && (resource = new FileSystemResource(metadata.getFilePath()))!=null && resource.exists()){
+            MultipartBodyBuilder builder = new MultipartBodyBuilder();
+            builder.part("filedata", resource);
+            name = resource.getFilename();
+            builder.part("name", name);
+            builder.part("nodeType", metadata.getNodeType());
+            builder.part("overwrite", metadata.isOverwrite());
+            builder.part("majorVersion", metadata.isMajorVersion());
+            for(Entry<String, String> entry: metadata.getProperties().entrySet()){
+                builder.part(entry.getKey(), entry.getValue());
+            }
+            HttpEntity<MultiValueMap<String, HttpEntity<?>>> fileRequest = new HttpEntity<>(builder.build(), headers);
+            request = fileRequest;
+        }else{
+            String body = metadata.getPayload();
+            HttpEntity<String> folderRequest = new HttpEntity<>(body, headers);
+            request = folderRequest;
+        }
+        
+        try{
+            ResponseEntity<String> response = restTemplate.exchange(url.toString(), HttpMethod.POST, (HttpEntity<Object>)request, String.class);
+            JSONObject respJson;
+            if(response.getBody()!=null && (respJson= new JSONObject())!=null && respJson.has("entry")){
+                JSONObject info = respJson.getJSONObject("entry");
+                return info.toString();
+            }else{
+                //TODO: log error and retry
+            }
+        }catch(Exception e){
+            //TODO: log error and retry
+        }
+        return null;
+    }
+
 }
