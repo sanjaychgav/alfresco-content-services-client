@@ -97,4 +97,30 @@ public class Controller{
         String info = nodesService.updateNodeInfo(nodeId, metadata);
         return new ResponseEntity<>(info, HttpStatus.CREATED);
     }
+
+    @RequestMapping(name = "/node-content", method = RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
+    private ResponseEntity<String> getNodeContent(@RequestParam(name = "nodeId") String nodeId,
+        @RequestParam(name = "relativePath", required = false) String relativePath,
+        @RequestParam(name = "downloadPath", required = false) String downloadPath){
+
+        JSONObject json = new JSONObject(nodesService.getNodeInfo(nodeId, false));
+        if(relativePath!=null){
+            //Child node
+            json = new JSONObject(nodesService.getNodeInfo(nodeId, relativePath));
+            nodeId = json.getString("id");
+        }
+        byte[] bytes = nodesService.getNodeContent(nodeId, true);
+        String fileName = json.getString("name");
+        fileName = Commons.computeFileExtension(json, fileName);
+        String filePath = System.getProperty("user.home") + "/Downloads/" + fileName;
+        if(downloadPath!=null)
+            filePath = downloadPath + "/" + fileName;
+        File destFile = new File(filePath);
+        try{
+            FileUtils.copyToFile(new ByteArrayInputStream(bytes), destFile);
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>("File downloaded: ".concat(filePath),HttpStatus.CREATED);
+    }
 }
