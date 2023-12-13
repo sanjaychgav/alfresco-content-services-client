@@ -130,4 +130,25 @@ public class NodesService{
         }
     }
 
+    public String updateNodeInfo(String nodeId, FileMetadata metadata){
+        StringBuffer url = new StringBuffer(getUrl());
+        url.append("/").append(nodeId);
+        String payload = metadata.getPayload();
+        HttpHeaders headers = getAuthenticatedHeaders();
+        HttpEntity<String> request = new HttpEntity<>(payload, headers);
+        try{
+            ResponseEntity<String> response = restTemplate.exchange(url.toString(), HttpMethod.PUT, request, String.class);
+            JSONObject respJson;
+            if(response.getBody()!=null && (respJson=new JSONObject(response.getBody()))!=null && respJson.has("entry")){
+                JSONObject info = respJson.getJSONObject("entry");
+                return info.toString();
+            }else{
+                //TODO: log error and retry
+            }
+        }catch(Exception e){
+            //TODO: log error and retry
+            return null;
+        }
+        return null;
+    }
 }
