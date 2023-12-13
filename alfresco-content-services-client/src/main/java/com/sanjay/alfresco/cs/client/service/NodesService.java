@@ -196,4 +196,23 @@ public class NodesService{
         return null;
     }
 
+    public boolean deleteNode(String nodeId){
+        StringBuffer url = new StringBuffer(getUrl());
+        url.append("/").append(nodeId);
+        HttpHeaders headers = getAuthenticatedHeaders();
+        HttpEntity<String> request = new HttpEntity<>(headers);
+        try{
+            ResponseEntity<Object> response = restTemplate.exchange(url.toString(), HttpMethod.DELETE, request, Object.class);
+            if(response.getStatusCode().value()==204){
+                return true;
+            }else{
+                //TODO: log error and retry
+                return false;
+            }
+        }catch(Exception e){
+            //TODO: log error and retry
+            return false;
+        }
+    }
+
 }
