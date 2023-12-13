@@ -68,4 +68,20 @@ public class Controller{
         boolean flag = authenticator.deleteTicket();
         return new ResponseEntity<>("Ticket deletion ".concat(flag?"success":"failed"), HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/node-info", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    private ResponseEntity<String> getNodeInfo(@RequestParam(name = "nodeId") String nodeId,
+        @RequestParam(name = "relativePath", required = false) String relativePath,
+        @RequestParam(name = "children", defaultValue = "false") boolean children){
+        
+        String info;
+        if(relativePath!=null){
+            //Child node
+            info = nodesService.getNodeInfo(nodeId, relativePath);
+        }else{
+            info = nodesService.getNodeInfo(nodeId, children);
+        }
+        return new ResponseEntity<>(info, HttpStatus.OK);
+    }
+    
 }
