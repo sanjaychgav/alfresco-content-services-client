@@ -92,4 +92,42 @@ public class NodesService{
         return null;
     }
 
+    public byte[] getNodeContent(String nodeId, boolean attachment){
+        StringBuffer url = new StringBuffer(getUrl());
+        url.append("/")
+        .append(nodeId)
+        .append("?attachment=")
+        .append(attachment);
+        return getNodeContent(url);
+    }
+
+    public byte[] getNodeContent(String parentNodeId, String relativePath, boolean attachment){
+        JSONObject json = new JSONObject(getNodeInfo(parentNodeId, relativePath));
+        String nodeId = json.getString("id");
+        StringBuffer url = new StringBuffer(getUrl());
+        url.append("/")
+        .append(nodeId)
+        .append("?attachment=")
+        .append(attachment);
+        return getNodeContent(url);
+    }
+
+    private byte[] getNodeContent(StringBuffer url){
+        HttpHeaders headers = getAuthenticatedHeaders();
+        HttpEntity<String> request = new HttpEntity<>(headers);
+        try{
+            ResponseEntity<byte[]> response = restTemplate.exchange(url.toString(), HttpMethod.GET, request, byte[].class);
+            byte[] bytes;
+            if((bytes = response.getBody())!=null && bytes.length>0){
+                return bytes;
+            }else{
+                //TODO: no content
+                return null;
+            }
+        }catch(Exception e){
+            //TODO: log error and retry
+            return null;
+        }
+    }
+
 }
