@@ -40,7 +40,7 @@ public class AlfrescoAuthenticator{
         }
     }
 
-    private String getTicket(){
+    public String getTicket(){
         if(!validateTicket()){
             createTicket();
         }
